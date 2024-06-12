@@ -1,0 +1,101 @@
+#version: '3.7'
+
+services:
+#  minio:
+#    image: minio/minio:latest
+#    command: server --console-address ":9001" /data/
+#    ports:
+#      - "9000:9000"
+#      - "9001:9001"
+#    environment:
+#      MINIO_ROOT_USER: test
+#      MINIO_ROOT_PASSWORD: test
+#    volumes:
+#      - minio:/data
+
+      
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.0
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: qwe123
+    volumes:
+      - ./keycloak/realms/realm-export.json:/opt/keycloak/data/import/realm.json
+    ports:
+      - "8080:8080"
+    command:
+      - start-dev
+      - --import-realm
+      - --features admin-fine-grained-authz
+
+  portal-db:
+    image: postgres:15.7
+    container_name: portal-db
+    volumes:
+      - ~/data/postgres/portal-db:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: portal-db
+      POSTGRES_USER: portal
+      POSTGRES_PASSWORD: portal
+    ports:
+      - "5438:5438"
+
+  logist-db:
+    image: postgres:15.7
+    container_name: logist-db
+    volumes:
+      - ~/data/postgres/logist-db:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: logist-db
+      POSTGRES_USER: logist
+      POSTGRES_PASSWORD: logist
+    ports:
+      - "5440:5440"
+
+     
+  # rabbitmq:
+  #  image: 'bitnami/rabbitmq:latest'
+  #  ports:
+  #    - '15672:15672'
+  #    - '5672:5672'
+      
+  # zookeeper:
+  # image: wurstmeister/zookeeper:3.4.6
+  # hostname: zookeeper
+  # container_name: ern_zookeeper
+  # restart: always
+  # ports:
+  #    - 2181:2181
+  #  networks:
+  #    - test_network
+
+  #broker:
+  #  image: 'bitnami/kafka:3.5.1'
+  #  hostname: broker
+  #  depends_on:
+  #    - zookeeper
+  #  restart: always
+  #  ports:
+  #    - '9092:9092'
+  #    - '29092:29092'
+  #  environment:      
+  #    KAFKA_ADVERTISED_HOST_NAME: broker
+  #    KAFKA_ADVERTISED_PORT: 9092
+  #    KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  #    KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+  #    ALLOW_PLAINTEXT_LISTENER: yes
+  #    KAFKA_BROKER_ID: 0      
+  #    KAFKA_LISTENERS: EXTERNAL_SAME_HOST://:29092,INTERNAL://:9092
+  #    KAFKA_ADVERTISED_LISTENERS: INTERNAL://broker:9092,EXTERNAL_SAME_HOST://localhost:29092
+  #    KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL_SAME_HOST:PLAINTEXT
+  #    KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+  #  volumes:
+  #   - /var/run/docker.sock:/var/run/docker.sock
+  #  networks:
+  #    - test_network
+      
+networks:
+  test_network:
+
+volumes:
+  minio:

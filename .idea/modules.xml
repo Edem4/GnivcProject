@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/app-ms.iml" filepath="$PROJECT_DIR$/.idea/app-ms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app-driver/driver-service/driver-service.iml" filepath="$PROJECT_DIR$/app-driver/driver-service/driver-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app-dwh/dwh-service/dwh-service.iml" filepath="$PROJECT_DIR$/app-dwh/dwh-service/dwh-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app-gateway/gateway-api/gateway-api.iml" filepath="$PROJECT_DIR$/app-gateway/gateway-api/gateway-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app-logist/logist-service/logist-service.iml" filepath="$PROJECT_DIR$/app-logist/logist-service/logist-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app-portal/portal-service/portal-service.iml" filepath="$PROJECT_DIR$/app-portal/portal-service/portal-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/discovery-service/discovery/service.iml" filepath="$PROJECT_DIR$/discovery-service/discovery/service.iml" />
+    </modules>
+  </component>
+</project>

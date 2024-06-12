@@ -1,0 +1,9 @@
+package com.service.portalservice.exceptions;
+
+
+
+public class UserNotFoundException extends Exception{
+    public UserNotFoundException(String message) {
+        super(message);
+    }
+}

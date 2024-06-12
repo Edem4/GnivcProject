@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: logist-service
+
+server:
+  port: ${LOGIST_SERVICE_PORT:0}
+
+eureka:
+  client:
+    service-url-defaultZone: http://localhost:8761/eureka

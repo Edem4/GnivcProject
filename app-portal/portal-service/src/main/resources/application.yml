@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: portal-service
+  sql:
+    init:
+      mode: never
+  datasource:
+    username: portal
+    password: portal
+    url: jdbc:postgresql://localhost:5438/portal-db
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+  mail:
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    host: smtp.gmail.com
+    Port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: 8087
+
+dadata:
+  token: Token 494ac6e7440e8c450dad3a6f996a5c20e0100212
+
+eureka:
+  client:
+    service-url-defaultZone: http://localhost:8761/eureka
+
+keycloak:
+  admin:
+    username: admin
+    password: admin
+  auth-server-url: http://localhost:8080
+  realm: my-realm
+  client-id: gateway-client
+
