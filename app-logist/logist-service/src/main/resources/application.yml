@@ -1,9 +1,33 @@
 spring:
   application:
     name: logist-service
+  sql:
+    init:
+      mode: never
+  datasource:
+    username: logist
+    password: logist
+    url: jdbc:postgresql://localhost:5440/logist-db
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+  kafka:
+    consumer:
+      bootstrap-servers:
+        - localhost:9092
+      group-id: logist
 
 server:
-  port: ${LOGIST_SERVICE_PORT:0}
+  servlet:
+    encoding:
+      force: true
+      charset: UTF-8
+  port: 8088
 
 eureka:
   client:

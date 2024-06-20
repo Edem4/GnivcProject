@@ -46,3 +46,4 @@ keycloak:
   realm: my-realm
   client-id: gateway-client
 
+

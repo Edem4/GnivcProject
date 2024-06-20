@@ -3,6 +3,7 @@ package com.service.portalservice.service;
 import com.service.portalservice.dto.*;
 import com.service.portalservice.exceptions.*;
 import com.service.portalservice.mappers.Mapper;
+import com.service.portalservice.models.Company;
 import com.service.portalservice.models.User;
 import com.service.portalservice.models.UserDataBase;
 import com.service.portalservice.repository.UserRepository;
@@ -28,11 +29,12 @@ public class UserService {
     private String KEYCLOAK_REALM;
 //    private String ROLE_REGISTER = "REGISTERATOR";
     private final UserRepository userRepository;
+
     private MailService mailService;
 //    private DaDataService daDataService;
 
     @Autowired
-    public UserService(RealmResource realm, MailService mailService, KeycloakService keycloakService, UserRepository userRepository) {
+    public UserService(RealmResource realm, MailService mailService, KeycloakService keycloakService,  UserRepository userRepository) {
         this.realm = realm;
         this.mailService = mailService;
         this.keycloakService = keycloakService;
@@ -88,6 +90,10 @@ public class UserService {
          }
         return optionalUser.get();
     }
+    public UserDataBase getUser(String userName) throws UserNotFoundException {
+        return userRepository.findByUsername(userName);
+    }
+
 
     //СМЕНА ПАРОЛЯ ПОЛЬЗОВАТЕЛЯ
     public void resetPassword(ResetPasswordDTO passwordDTO, User user) throws UserNotFoundException {
@@ -121,6 +127,7 @@ public class UserService {
         userResource.update(userRepresentation);
         userRepository.save(userDataBase);
     }
+
 
 //    public List<UserDTO> getUsers(GetCompanyDTO companyDTO, User user) throws ForbiddenException, CompanyNotFoundException {
 //        if(!user.getRoles().containsKey(companyDTO.getName())){

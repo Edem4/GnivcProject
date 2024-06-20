@@ -1,7 +1,9 @@
 package com.service.portalservice.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.service.portalservice.dto.GetCompanyDTO;
 import com.service.portalservice.exceptions.CarAlreadyExistException;
+import com.service.portalservice.exceptions.CarNotFoundExceptions;
 import com.service.portalservice.exceptions.ForbiddenException;
 import com.service.portalservice.exceptions.UserNotFoundException;
 import com.service.portalservice.mappers.Mapper;
@@ -32,19 +34,20 @@ public class CarController {
         }
     }
 
-//
-//    @GetMapping("/get")
-//    public ResponseEntity<?> getCar(@RequestHeader HttpHeaders headers,
-//                                    @RequestBody GetCompanyDTO companyDTO){
-//
-//        try {
-//            return new ResponseEntity<>(carService.getCar(Mapper.getUserFromHeaders(headers), companyDTO.getNameCompany()), HttpStatus.OK);
-//        } catch (ForbiddenException e) {
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
-//        } catch (CarNotFoundExceptions e) {
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-//        } catch (JsonProcessingException | UserNotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+
+    @PostMapping("/get/{number}")
+    public ResponseEntity<?> getCar(
+           @PathVariable("number") String number,
+           @RequestHeader HttpHeaders headers){
+
+        try {
+            return new ResponseEntity<>(carService.getCar(Mapper.getUserFromHeaders(headers),number), HttpStatus.OK);
+        } catch (ForbiddenException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (CarNotFoundExceptions e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (JsonProcessingException | UserNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

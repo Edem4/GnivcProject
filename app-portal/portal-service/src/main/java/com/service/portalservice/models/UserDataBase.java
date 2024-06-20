@@ -16,7 +16,7 @@ public class UserDataBase {
     @Id
     @Column(name = "userId")
     private String userId;
-    @Column
+    @Column(unique = true)
     private String username;
     @Column
     private String firstName;

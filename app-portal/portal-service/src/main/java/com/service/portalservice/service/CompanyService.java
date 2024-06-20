@@ -3,6 +3,7 @@ package com.service.portalservice.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.service.portalservice.dto.DaDataDto;
+import com.service.portalservice.dto.DriverDTO;
 import com.service.portalservice.dto.GetCompanyDTO;
 import com.service.portalservice.dto.UserDTO;
 import com.service.portalservice.exceptions.*;
@@ -45,7 +46,7 @@ public class CompanyService {
         if(company.getName() == null || company.getName().isEmpty()){
             throw new InvalidInnException("Incorrect inn");
         }
-            company.setRoleCompany(keycloakService.createRolesForCreatedCompany(company.getName()));
+            company.setRoleCompany(keycloakService.createRolesForCreatedCompany(company.getInn()));
             companyRepository.save(company);
 
             userService.addRoleUser(user,ROLE_ADMIN,company.getRoleCompany().get(0));
@@ -147,6 +148,34 @@ public class CompanyService {
     }
     public Company getCompany(String nameCompany){
         return companyRepository.findByName(nameCompany);
+    }
+
+    public DriverDTO getDriverFromDateBase(String userName, User user, String nameCompany) throws UserNotFoundException,
+            ForbiddenException {
+
+        UserDataBase userDriver = userRepository.findByUsername(userName);
+        UserDataBase userRequest = userRepository.findByUsername(user.getUsername());
+        Company company = getCompany(nameCompany);
+
+        if(userDriver == null) {
+            throw new UserNotFoundException("Пользователь не найден");
+        }
+        if(!accessDriver(userRequest,company)) {
+            throw new ForbiddenException("У пользователя нет прав в этой компании");
+        }
+            if(!Mapper.checkRoleForCompany(userDriver,company.getRoleCompany(),"DRIVER")){
+            throw new ForbiddenException("Водителя нет в данной компании");
+        }
+            DriverDTO driverDTO = new DriverDTO();
+            driverDTO.setCompanyInn(company.getInn());
+            driverDTO.setDriverId(userDriver.getUserId());
+            driverDTO.setDriverName(userDriver.getFirstName());
+            driverDTO.setDriverLastName(userDriver.getLastName());
+        return driverDTO;
+    }
+    private static boolean accessDriver(UserDataBase userDataBase, Company company){
+        return Mapper.checkRoleForCompany(userDataBase, company.getRoleCompany(), "ADMIN") ||
+                Mapper.checkRoleForCompany(userDataBase, company.getRoleCompany(), "LOGIST");
     }
 
     //ИНФОРМАЦИЯ ПО КОМПАНИИ

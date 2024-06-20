@@ -9,6 +9,7 @@ import com.service.portalservice.exceptions.*;
 import com.service.portalservice.mappers.Mapper;
 import com.service.portalservice.models.User;
 import com.service.portalservice.service.CompanyService;
+import com.service.portalservice.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 public class CompanyController {
     @Autowired
     private CompanyService companyService;
+    @Autowired
+    private UserService userService;
 
 
     //СОЗДАНИЕ КОМПАНИИ
@@ -71,6 +74,24 @@ public class CompanyController {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @PostMapping("/driver/get/{name}")
+    public ResponseEntity<?> getDrivers(@PathVariable("name") String name,
+                                        @RequestHeader HttpHeaders headers,
+                                        @RequestBody GetCompanyDTO getCompanyDTO){
+        try {
+            return new ResponseEntity<>(
+                    companyService.getDriverFromDateBase(name,
+                            Mapper.getUserFromHeaders(headers),
+                            getCompanyDTO.getNameCompany()),
+                    HttpStatus.OK
+            );
+        } catch (ForbiddenException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        }catch (JsonProcessingException | UserNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping("/get")

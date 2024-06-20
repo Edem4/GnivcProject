@@ -33,18 +33,17 @@ public class SecurityConfig{
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(requests -> {
                     requests.pathMatchers("/openid-connect/**").permitAll();
-                    requests.pathMatchers("/portal/users/create/register").permitAll();
+                    requests.pathMatchers("/portal/users/create").permitAll();
                     requests.pathMatchers("/portal/company/create").hasAnyAuthority("REGISTRATOR");
                     requests.pathMatchers("/portal/company/add/worker").hasAnyAuthority("ADMIN","LOGIST");
                     requests.pathMatchers("/portal/company/get").hasAnyAuthority("ADMIN");
                     requests.pathMatchers("/portal/company/get/all").hasAnyAuthority("ADMIN");
                     requests.pathMatchers("/portal/users/reset/password").permitAll();
+                    requests.pathMatchers("/portal/company/driver/**").hasAnyAuthority("ADMIN","LOGIST");
                     requests.pathMatchers("/portal/users/change").hasAnyAuthority("ADMIN","REGISTRATOR","LOGIST","DRIVER");
-                    requests.pathMatchers("/portal/cars/add").hasAnyAuthority("ADMIN","LOGIST");
-                    requests.pathMatchers("/portal/cars/get").hasAnyAuthority("ADMIN","LOGIST");
+                    requests.pathMatchers("/portal/cars/**").hasAnyAuthority("ADMIN","LOGIST");
                     requests.pathMatchers("/logist/**").hasAnyAuthority("LOGIST");
                     requests.pathMatchers("/dwh").permitAll();
-
                 })
                 .oauth2ResourceServer(ServerConfig ->
                         ServerConfig.authenticationManagerResolver(context -> Mono.just(provider))

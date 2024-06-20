@@ -8,6 +8,7 @@ import com.service.portalservice.service.DaDataService;
 import com.service.portalservice.service.KeycloakService;
 import com.service.portalservice.service.UserService;
 import jakarta.validation.Valid;
+import org.keycloak.representations.idm.ScopeMappingRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,10 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private KeycloakService keycloakService;
-    @Autowired
-    private DaDataService daDataService;
 
     //СОЗДАНИЕ ПОЛЬЗОВАТЕЛЯ С РОЛЬЮ РЕГИСТРАТОР
     @PostMapping("/create")

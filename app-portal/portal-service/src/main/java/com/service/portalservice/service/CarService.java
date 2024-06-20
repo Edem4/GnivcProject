@@ -1,6 +1,7 @@
 package com.service.portalservice.service;
 
 
+import com.service.portalservice.dto.CarDTO;
 import com.service.portalservice.exceptions.CarAlreadyExistException;
 import com.service.portalservice.exceptions.CarNotFoundExceptions;
 import com.service.portalservice.exceptions.ForbiddenException;
@@ -36,19 +37,21 @@ public class CarService {
         carRepository.save(car);
     }
 
-    public Car getCar(User user, String companyName) throws CarNotFoundExceptions, ForbiddenException, UserNotFoundException {
+    public CarDTO getCar(User user, String number) throws CarNotFoundExceptions, ForbiddenException, UserNotFoundException {
 
         UserDataBase userDataBase = userService.getUserFromDateBase(user.getUserId());
-        Car car = carRepository.findByCompany(companyName);
+        Car car = carRepository.findByNumber(number);
 
         if(car == null) {
             throw new CarNotFoundExceptions("Автомобиль не найден!");
         }
 
-        if(accessCar(userDataBase,companyService.getCompany(car.getCompany()))) {
-            throw new ForbiddenException("Forbidden");
+        if(!accessCar(userDataBase,companyService.getCompany(car.getCompany()))) {
+            throw new ForbiddenException("У Пользователя нет доступа к этой машине!");
         }
-        return car;
+        CarDTO carDTO = new CarDTO();
+        carDTO.setNumberAuto(car.getNumber());
+        return carDTO;
     }
 
     private static boolean accessCar(UserDataBase userDataBase, Company company){

@@ -47,15 +47,15 @@ public class KeycloakService {
         sendPassword(userRepresentation);
     }
 
-    public List<RoleRepresentation> createRolesForCreatedCompany(String companyName) {
+    public List<RoleRepresentation> createRolesForCreatedCompany(String companyInn) {
         RoleRepresentation admin = new RoleRepresentation(
-                ROLE_ADMIN + companyName, "", false
+                ROLE_ADMIN + companyInn, "", false
         );
         RoleRepresentation logist = new RoleRepresentation(
-                ROLE_LOGIST + companyName, "", false
+                ROLE_LOGIST + companyInn, "", false
         );
         RoleRepresentation driver = new RoleRepresentation(
-                ROLE_DRIVER + companyName, "", false
+                ROLE_DRIVER + companyInn, "", false
         );
         List.of(admin, logist, driver).forEach(role -> realm.roles().create(role));
         return List.of(admin, logist, driver);
