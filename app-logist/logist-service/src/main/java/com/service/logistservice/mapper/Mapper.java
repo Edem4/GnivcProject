@@ -1,45 +1,22 @@
 package com.service.logistservice.mapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.CollectionType;
-import com.service.logistservice.dto.CarDTO;
-import com.service.logistservice.dto.DriverDTO;
+import com.sadikov.myLibrary.dto.CarDTO;
+import com.sadikov.myLibrary.dto.DriverDTO;
+import com.sadikov.myLibrary.dto.GetTaskDTO;
 import com.service.logistservice.dto.TasksDTO;
 import com.service.logistservice.model.Tasks;
-import com.service.logistservice.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-
-import java.util.List;
 
 public class Mapper {
-    @Autowired
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-    @Autowired
-    private static final CollectionType collectionType = objectMapper.getTypeFactory().constructCollectionType(List.class,String.class);
+    public static GetTaskDTO convertTaskDTO(Tasks task){
+        GetTaskDTO taskDTO = new GetTaskDTO();
+        taskDTO.setNameCompany(task.getCompanyName());
+        taskDTO.setEndPoint(task.getEndPoint().toString());
+        taskDTO.setStartPoint(task.getStartPoint().toString());
+        taskDTO.setDriverName(task.getFirstNameDriver());
+        taskDTO.setDescriptionCargo(task.getDescriptionCargo());
+        taskDTO.setCarNumber(task.getNumberAuto());
 
-    public static User getUserFromHeaders(HttpHeaders headers) throws JsonProcessingException {
-        User  user = new User();
-        user.setUserId(headers.get("userId").get(0));
-        user.setUsername(headers.get("userName").get(0));
-        user.setEmail(headers.get("userEmail").get(0));
-        user.setRoles(objectMapper.readValue(headers.get("roles").get(0), collectionType));
-        return user;
-    }
-
-    public static boolean checkLogistForCompany(User user,String companyInn){
-
-        for(String role: user.getRoles()){
-            String str2 = String.format("%.6s",role);
-            if(str2.equalsIgnoreCase("logist")){
-               String str = role.replace("LOGIST","");
-                if(str.equals(companyInn)){
-                    return true;
-                }
-            }
-        }
-        return false;
+        return taskDTO;
     }
 
     public static Tasks buildToTask(TasksDTO tasksDTO, DriverDTO driverDTO, CarDTO carDTO) {
@@ -51,8 +28,9 @@ public class Mapper {
         tasks.setEndPoint(tasksDTO.getEndPoint());
         tasks.setDescriptionCargo(tasksDTO.getDescriptionCargo());
         tasks.setNumberAuto(carDTO.getNumberAuto());
-        tasks.setFirstNameDriver(driverDTO.getDriverName());
+        tasks.setFirstNameDriver(driverDTO.getDriverFirstName());
         tasks.setLastNameDriver(driverDTO.getDriverLastName());
+        tasks.setDriverId(driverDTO.getDriverId());
 
         return tasks;
     }

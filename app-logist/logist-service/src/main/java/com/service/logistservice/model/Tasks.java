@@ -27,6 +27,8 @@ public class Tasks {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "endPoint", referencedColumnName = "id")
     private Points endPoint;
+    @Column
+    private String driverId;
 
     @Column
     private String firstNameDriver;

@@ -1,6 +1,6 @@
 package com.service.logistservice.dto;
 
-import com.service.logistservice.model.Status;
+import com.sadikov.myLibrary.model.Status;
 import lombok.Data;
 
 import java.time.LocalDateTime;

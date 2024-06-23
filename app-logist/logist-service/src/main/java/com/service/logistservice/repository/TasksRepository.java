@@ -13,6 +13,7 @@ import java.util.List;
 @Repository
 public interface TasksRepository extends JpaRepository<Tasks, Long> {
        List<Tasks> findByCompanyName(String companyName);
+       List<Tasks> findByDriverId(String driverId);
 
        @Query("SELECT e FROM Tasks e WHERE e.companyName = :companyName")
        Page<Tasks> findBySomeCompanyName(@Param("companyName") String companyName, Pageable pageable);

@@ -2,8 +2,8 @@ package com.service.portalservice.service;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sadikov.myLibrary.dto.DriverDTO;
 import com.service.portalservice.dto.DaDataDto;
-import com.service.portalservice.dto.DriverDTO;
 import com.service.portalservice.dto.GetCompanyDTO;
 import com.service.portalservice.dto.UserDTO;
 import com.service.portalservice.exceptions.*;
@@ -17,6 +17,7 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,10 +147,11 @@ public class CompanyService {
                 role.equals(ROLE_LOGIST) ||
                 role.equals(ROLE_ADMIN);
     }
+    @Transactional(readOnly = true)
     public Company getCompany(String nameCompany){
         return companyRepository.findByName(nameCompany);
     }
-
+    @Transactional(readOnly = true)
     public DriverDTO getDriverFromDateBase(String userName, User user, String nameCompany) throws UserNotFoundException,
             ForbiddenException {
 
@@ -169,8 +171,9 @@ public class CompanyService {
             DriverDTO driverDTO = new DriverDTO();
             driverDTO.setCompanyInn(company.getInn());
             driverDTO.setDriverId(userDriver.getUserId());
-            driverDTO.setDriverName(userDriver.getFirstName());
+            driverDTO.setDriverFirstName(userDriver.getFirstName());
             driverDTO.setDriverLastName(userDriver.getLastName());
+            driverDTO.setDriverUserName(userDriver.getUsername());
         return driverDTO;
     }
     private static boolean accessDriver(UserDataBase userDataBase, Company company){
@@ -190,7 +193,7 @@ public class CompanyService {
                 "Drivers: " + company.getDriverCount() + ", " +
                 "Logists: " + company.getLogistCount();
     }
-
+    @Transactional(readOnly = true)
     //ИНФОРМАЦИЯ ПО ВСЕМ КОМПАНИЯМ
     public List<String> getAllCompany(){
         List<Company> allCompany = companyRepository.findAll();

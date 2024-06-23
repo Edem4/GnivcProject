@@ -19,12 +19,21 @@ public class Points {
     @Column(name = "lon")
     private double longitude;
 
+    public Points(double lat, double lon) {
+        this.longitude=lon;
+        this.latitude=lat;
+    }
     public Points(String coordinates) {
-        latitude = Double.parseDouble(coordinates.split(",")[0]);
-        longitude = Double.parseDouble(coordinates.split(",")[1]);
+        this.longitude= Double.parseDouble(coordinates.split(",")[1]);
+        this.latitude=Double.parseDouble(coordinates.split(",")[0]);
     }
 
     public Points() {
     }
 
+    @Override
+    public String toString() {
+        return "lat = " + latitude +
+                ", lon = " + longitude;
+    }
 }

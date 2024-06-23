@@ -1,9 +1,13 @@
 package com.service.portalservice.service;
 
-import com.service.portalservice.dto.*;
-import com.service.portalservice.exceptions.*;
+import com.service.portalservice.dto.ChangeUserDataDTO;
+import com.service.portalservice.dto.RegistratorDTO;
+import com.service.portalservice.dto.ResetPasswordDTO;
+import com.service.portalservice.dto.UserDTO;
+import com.service.portalservice.exceptions.KeycloakException;
+import com.service.portalservice.exceptions.UserNotCreatedException;
+import com.service.portalservice.exceptions.UserNotFoundException;
 import com.service.portalservice.mappers.Mapper;
-import com.service.portalservice.models.Company;
 import com.service.portalservice.models.User;
 import com.service.portalservice.models.UserDataBase;
 import com.service.portalservice.repository.UserRepository;
@@ -17,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -52,6 +57,7 @@ public class UserService {
                     (HttpStatus) HttpStatusCode.valueOf(e.getResponse().getStatus()));
         }
     }
+    @Transactional
     public void createNewUser(UserDTO userDTO) throws UserNotCreatedException, UserNotFoundException {
         UserRepresentation userRepresentation = Mapper.convertToUserRepresentation(userDTO);
         try {
@@ -63,6 +69,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     //ДОБАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯ В БД
     private void addUserDataBase(UserRepresentation userRepresentation) throws UserNotFoundException, UserNotCreatedException {
         UserDataBase userDataBase = new UserDataBase();
@@ -74,6 +81,7 @@ public class UserService {
         userRepository.save(userDataBase);
     }
 
+    @Transactional
     //ДОБАВЛЕНИЕ РОЛИ КОМПАНИИ ПОЛЬЗОВАТЕЛЮ
     public void addRoleUser(User user, String role, String roleCompany) throws UserNotFoundException, KeycloakException {
         keycloakService.setRole(user.getUserId(), role, roleCompany);
@@ -81,7 +89,7 @@ public class UserService {
         userDataBase.setRolesToCompany(roleCompany);
         userRepository.save(userDataBase);
     }
-
+    @Transactional(readOnly = true)
     //ПОЛУЧЕНИЕ ПОЛЬЗОВАТЕЛЯ ИЗ БД
     public UserDataBase getUserFromDateBase(String userId) throws UserNotFoundException {
         Optional<UserDataBase> optionalUser = userRepository.findById(userId);
@@ -89,9 +97,6 @@ public class UserService {
              throw new UserNotFoundException("Пользователь не найден");
          }
         return optionalUser.get();
-    }
-    public UserDataBase getUser(String userName) throws UserNotFoundException {
-        return userRepository.findByUsername(userName);
     }
 
 

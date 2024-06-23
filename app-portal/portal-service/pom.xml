@@ -64,7 +64,18 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.sadikov</groupId>
+			<artifactId>myLibrary</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sadikov</groupId>
+			<artifactId>myLibrary</artifactId>
+			<version>1.0.0</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

@@ -1,16 +1,19 @@
 package com.service.logistservice.service;
 
-import com.service.logistservice.dto.FlightDTO;
+import com.sadikov.myLibrary.dto.FlightDTO;
+import com.sadikov.myLibrary.dto.PointDTO;
+import com.sadikov.myLibrary.exceptions.FlightNotFoundException;
+import com.sadikov.myLibrary.exceptions.PointsNotFoundException;
+import com.sadikov.myLibrary.exceptions.TaskNotFoundException;
+import com.sadikov.myLibrary.exceptions.TaskOfAnotherCompanyException;
+import com.sadikov.myLibrary.model.Status;
+import com.sadikov.myLibrary.model.User;
 import com.service.logistservice.dto.GetFlightDTO;
-import com.service.logistservice.dto.PointDTO;
-import com.service.logistservice.exceptions.FlightNotFoundException;
-import com.service.logistservice.exceptions.PointsNotFoundException;
-import com.service.logistservice.exceptions.TaskNotFoundException;
-import com.service.logistservice.exceptions.TaskOfAnotherCompanyException;
 import com.service.logistservice.model.*;
 import com.service.logistservice.repository.FlightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +24,7 @@ public class FlightService {
     private FlightRepository flightRepository;
     @Autowired
     private TaskService taskService;
-
+    @Transactional
     public void createFlight(FlightDTO flightDTO, User user) throws TaskOfAnotherCompanyException, TaskNotFoundException {
 
         Tasks task = taskService.getTask(flightDTO.getTaskId(), user);
@@ -32,24 +35,25 @@ public class FlightService {
         event.setTimeEvent(flight.getCreateTime());
         event.setStatus(Status.CREATED.name());
 
+        flight.setDriverId(task.getDriverId());
         flight.setEvents(event);
         task.setFlights(flight);
 
         taskService.saveTask(task);
     }
-
-    public void addDriverPoints(PointDTO pointDTO) {
-        try {
-            Points points = new Points(pointDTO.getCoordinates());
+    @Transactional
+    public void addDriverPoints(PointDTO pointDTO) throws FlightNotFoundException {
+            Points points = new Points(pointDTO.getLat(),pointDTO.getLon());
             Flight flight = getFlight(pointDTO.getFlightId());
+
+            if(!flight.getDriverId().equals(pointDTO.getDriverId())){
+                throw new FlightNotFoundException("У вас нет доступа к этому рейсу!");
+            }
 
             flight.setDriverLocation(points);
             flightRepository.save(flight);
-        } catch (FlightNotFoundException e) {
-            throw new RuntimeException(e);
-        }
     }
-
+    @Transactional(readOnly = true)
     public GetFlightDTO getFlight(Long flightId, Long tasksId, User user) throws TaskNotFoundException,
             TaskOfAnotherCompanyException,
             FlightNotFoundException {
@@ -70,6 +74,7 @@ public class FlightService {
         return getFlightDTO;
     }
 
+    @Transactional(readOnly = true)
     public Flight getFlight(long flightId) throws FlightNotFoundException {
 
         Optional<Flight> flight = flightRepository.findById(flightId);

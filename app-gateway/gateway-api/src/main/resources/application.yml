@@ -51,9 +51,11 @@ spring:
             - RewritePath=/logist, /
 
         - id: driver-service
-          uri: lb://driver-service
+          uri: http://localhost:8089
           predicates:
-            - Path=/driver
+            - Path=/driver/**
+          filters:
+            - RewritePath=/driver, /
 
         - id: dwh-service
           uri: lb://dwh-service

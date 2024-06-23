@@ -1,16 +1,17 @@
 package com.service.logistservice.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.service.logistservice.dto.CarDTO;
+import com.sadikov.myLibrary.dto.CarDTO;
+import com.sadikov.myLibrary.dto.DriverDTO;
+import com.sadikov.myLibrary.exceptions.TaskNotCreatedException;
+import com.sadikov.myLibrary.exceptions.TaskNotFoundException;
+import com.sadikov.myLibrary.exceptions.TaskOfAnotherCompanyException;
+import com.sadikov.myLibrary.mapper.Mappers;
+import com.sadikov.myLibrary.model.User;
 import com.service.logistservice.dto.CompanyDTO;
-import com.service.logistservice.dto.DriverDTO;
 import com.service.logistservice.dto.TasksDTO;
-import com.service.logistservice.exceptions.TaskNotCreatedException;
-import com.service.logistservice.exceptions.TaskNotFoundException;
-import com.service.logistservice.exceptions.TaskOfAnotherCompanyException;
 import com.service.logistservice.mapper.Mapper;
 import com.service.logistservice.model.Tasks;
-import com.service.logistservice.model.User;
 import com.service.logistservice.portal.PortalClient;
 import com.service.logistservice.service.TaskService;
 import jakarta.validation.Valid;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tasks")
@@ -57,7 +59,7 @@ public class TaskController {
                     portalClient.findCarByNumber(tasksDTO.getCarNumber(),
                             headers.toSingleValueMap());
 
-            taskService.createTask(tasksDTO, driverDTO, carDTO, Mapper.getUserFromHeaders(headers));
+            taskService.createTask(tasksDTO, driverDTO, carDTO, Mappers.getUserFromHeaders(headers));
 
             return new ResponseEntity<>("Задание создано!", HttpStatus.CREATED);
 
@@ -71,7 +73,7 @@ public class TaskController {
                                      @RequestHeader HttpHeaders headers) {
 
         try {
-            User user = Mapper.getUserFromHeaders(headers);
+            User user = Mappers.getUserFromHeaders(headers);
             return new ResponseEntity<>(taskService.getTask(tasksId, user), HttpStatus.OK);
         } catch (TaskNotFoundException | JsonProcessingException | TaskOfAnotherCompanyException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -87,8 +89,23 @@ public class TaskController {
             @RequestHeader HttpHeaders headers
     ) {
         try {
-            User user = Mapper.getUserFromHeaders(headers);
+            User user = Mappers.getUserFromHeaders(headers);
             return taskService.getAllTasks(offset, limit, user, companyName);
+        } catch (JsonProcessingException | TaskNotFoundException | TaskOfAnotherCompanyException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/driver")
+    public ResponseEntity<?> getAllTasksDriver(@RequestHeader HttpHeaders headers
+    ) {
+        try {
+            User user = Mappers.getUserFromHeaders(headers);
+            return new ResponseEntity<>(taskService.
+                    getAllTasksDriver(user)
+                    .stream().map(Mapper::convertTaskDTO).
+                    collect(Collectors.toList()),HttpStatus.OK);
+
         } catch (JsonProcessingException | TaskNotFoundException | TaskOfAnotherCompanyException e) {
             throw new RuntimeException(e);
         }

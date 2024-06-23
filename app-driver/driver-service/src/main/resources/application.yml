@@ -1,9 +1,13 @@
 spring:
   application:
     name: driver-service
+  kafka:
+    producer:
+      bootstrap-servers:
+        - localhost:9092
 
 server:
-  port: ${DRIVER_SERVICE_PORT:0}
+  port: 8089
 
 eureka:
   client:

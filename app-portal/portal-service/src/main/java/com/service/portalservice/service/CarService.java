@@ -1,7 +1,7 @@
 package com.service.portalservice.service;
 
 
-import com.service.portalservice.dto.CarDTO;
+import com.sadikov.myLibrary.dto.CarDTO;
 import com.service.portalservice.exceptions.CarAlreadyExistException;
 import com.service.portalservice.exceptions.CarNotFoundExceptions;
 import com.service.portalservice.exceptions.ForbiddenException;
@@ -14,6 +14,7 @@ import com.service.portalservice.models.UserDataBase;
 import com.service.portalservice.repository.CarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CarService {
@@ -23,6 +24,8 @@ public class CarService {
     private CompanyService companyService;
     @Autowired
     private CarRepository carRepository;
+
+    @Transactional
     public void addCar(Car car, User user) throws UserNotFoundException, ForbiddenException, CarAlreadyExistException{
 
         UserDataBase userDataBase = userService.getUserFromDateBase(user.getUserId());
@@ -37,6 +40,7 @@ public class CarService {
         carRepository.save(car);
     }
 
+    @Transactional(readOnly = true)
     public CarDTO getCar(User user, String number) throws CarNotFoundExceptions, ForbiddenException, UserNotFoundException {
 
         UserDataBase userDataBase = userService.getUserFromDateBase(user.getUserId());

@@ -19,6 +19,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/company")
 public class CompanyController {
@@ -34,7 +36,7 @@ public class CompanyController {
                                         @RequestHeader HttpHeaders headers,
                                         BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(getErrorMessageCompany(bindingResult), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError()).getField(), HttpStatus.BAD_REQUEST);
         }
         try {
             User user = Mapper.getUserFromHeaders(headers);
@@ -55,7 +57,7 @@ public class CompanyController {
                                             @RequestHeader HttpHeaders headers, BindingResult bindingResult)  {
 
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(getErrorMessageCompany(bindingResult), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError()).getField(), HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -95,7 +97,12 @@ public class CompanyController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> getCompany(@RequestBody GetCompanyDTO getCompanyDTO) {
+    public ResponseEntity<?> getCompany(@RequestBody GetCompanyDTO getCompanyDTO,
+                                        BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError()).getField(), HttpStatus.BAD_REQUEST);
+        }
+
         return new ResponseEntity<>(companyService.getCompanyInfo(getCompanyDTO), HttpStatus.OK);
     }
 
@@ -105,54 +112,5 @@ public class CompanyController {
         return new ResponseEntity<>(companyService.getAllCompany(), HttpStatus.OK);
     }
 
-    private String getErrorMessageCompany(BindingResult bindingResult) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            stringBuilder.append(fieldError.getField())
-                    .append(" - ")
-                    .append(fieldError.getDefaultMessage())
-                    .append("; ");
-        }
-
-        return stringBuilder.toString();
-    }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//    @GetMapping("/get/all/paging")
-//    public ResponseEntity<List<MinCompanyDTO>> getCompanies(@RequestBody GetPagingDTO pagingDTO) {
-//        return new ResponseEntity<>(companyService.getCompanies(pagingDTO), HttpStatus.OK);
-//    }
-

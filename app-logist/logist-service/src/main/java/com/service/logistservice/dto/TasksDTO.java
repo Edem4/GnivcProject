@@ -21,5 +21,4 @@ public class TasksDTO {
     private String carNumber;
     @NotEmpty
     private String descriptionCargo;
-
 }

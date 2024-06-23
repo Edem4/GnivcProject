@@ -72,6 +72,11 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.sadikov</groupId>
+			<artifactId>myLibrary</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 	</dependencies>
 	<dependencyManagement>

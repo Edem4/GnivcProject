@@ -1,13 +1,13 @@
 package com.service.logistservice.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.service.logistservice.dto.FlightDTO;
-import com.service.logistservice.exceptions.FlightNotFoundException;
-import com.service.logistservice.exceptions.PointsNotFoundException;
-import com.service.logistservice.exceptions.TaskNotFoundException;
-import com.service.logistservice.exceptions.TaskOfAnotherCompanyException;
-import com.service.logistservice.mapper.Mapper;
-import com.service.logistservice.model.User;
+import com.sadikov.myLibrary.dto.FlightDTO;
+import com.sadikov.myLibrary.exceptions.FlightNotFoundException;
+import com.sadikov.myLibrary.exceptions.PointsNotFoundException;
+import com.sadikov.myLibrary.exceptions.TaskNotFoundException;
+import com.sadikov.myLibrary.exceptions.TaskOfAnotherCompanyException;
+import com.sadikov.myLibrary.mapper.Mappers;
+import com.sadikov.myLibrary.model.User;
 import com.service.logistservice.service.FlightService;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.ForbiddenException;
@@ -43,7 +43,7 @@ public class FlightController {
         }
         try {
 
-            flightService.createFlight(flightDTO, Mapper.getUserFromHeaders(headers));
+            flightService.createFlight(flightDTO, Mappers.getUserFromHeaders(headers));
             return new ResponseEntity<>("Рейс успешно создан!", HttpStatus.CREATED);
 
         } catch (ForbiddenException | TaskNotFoundException | JsonProcessingException |
@@ -58,7 +58,7 @@ public class FlightController {
                                        @RequestParam("taskId") Long taskId,
                                        @RequestHeader HttpHeaders headers) {
         try {
-            User user = Mapper.getUserFromHeaders(headers);
+            User user = Mappers.getUserFromHeaders(headers);
             return new ResponseEntity<>(flightService.getFlight(flightId, taskId, user).toString(), HttpStatus.OK);
 
         } catch (TaskNotFoundException | JsonProcessingException | TaskOfAnotherCompanyException |
@@ -72,7 +72,7 @@ public class FlightController {
     public ResponseEntity<?> getAll(@RequestParam("tasksId") long tasksId,
                                     @RequestHeader HttpHeaders headers) {
         try {
-            User user = Mapper.getUserFromHeaders(headers);
+            User user = Mappers.getUserFromHeaders(headers);
             return new ResponseEntity<>(flightService.getAllFlight(user, tasksId), HttpStatus.OK);
         } catch (JsonProcessingException | TaskOfAnotherCompanyException | FlightNotFoundException |
                  TaskNotFoundException e) {
@@ -86,7 +86,7 @@ public class FlightController {
                                             @RequestParam("taskId") Long taskId,
                                             @RequestHeader HttpHeaders headers) {
         try {
-            User user = Mapper.getUserFromHeaders(headers);
+            User user = Mappers.getUserFromHeaders(headers);
             return new ResponseEntity<>(flightService.getPointDriver(flightId, taskId, user).toString(), HttpStatus.OK);
 
         } catch (JsonProcessingException | FlightNotFoundException | PointsNotFoundException | TaskNotFoundException |
@@ -95,36 +95,4 @@ public class FlightController {
         }
     }
 
-
-//    @PostMapping("/create/event")
-//    public ResponseEntity<?> createFlight(@RequestBody @Valid EventDTO eventDTO,
-//                                          @RequestHeader HttpHeaders headers,
-//                                          BindingResult bindingResult){
-//        if(bindingResult.hasErrors()){
-//            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError()).getField(), HttpStatus.BAD_REQUEST);
-//        }
-//        try {
-//            Flight flight = flightService.getFlight(eventDTO.getFlightId());
-//            eventsService.addNewEvent(flight,eventDTO.getStatus());
-//            return new ResponseEntity<>("Событие успешно созданно!", HttpStatus.CREATED);
-//
-//        } catch (ForbiddenException | FlightNotFoundException | EventNotCreateException  e) {
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
-//        }
-//    }
-
-//    @PostMapping("/add/pointDriver")
-//    public ResponseEntity<?> createFlight(@RequestBody @Valid PointDTO pointDTO,
-//                                          @RequestHeader HttpHeaders headers,
-//                                          BindingResult bindingResult){
-//        if(bindingResult.hasErrors()){
-//            return new ResponseEntity<>(Objects.requireNonNull(bindingResult.getFieldError()).getField(), HttpStatus.BAD_REQUEST);
-//        }
-//        try {
-//            flightService.addDriverPoints(pointDTO);
-//            return new ResponseEntity<>("геоданные успешно добаленны!", HttpStatus.CREATED);
-//        } catch (ForbiddenException e) {
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
-//        }
-//    }
 }

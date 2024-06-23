@@ -15,6 +15,8 @@ public class Flight {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    private String driverId;
     @Column()
     private LocalDateTime createTime;
 

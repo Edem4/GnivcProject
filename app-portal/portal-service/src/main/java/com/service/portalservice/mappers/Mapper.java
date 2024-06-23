@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collections;
 import java.util.List;
 
-@Component
+
 public class Mapper {
     @Autowired
     private static final ObjectMapper objectMapper = new ObjectMapper();
