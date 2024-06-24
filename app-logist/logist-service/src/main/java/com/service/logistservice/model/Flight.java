@@ -17,6 +17,8 @@ public class Flight {
     private long id;
 
     private String driverId;
+    @Column
+    private String companyName;
     @Column()
     private LocalDateTime createTime;
 

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sadikov.myLibrary.dto.EventDTO;
 import com.sadikov.myLibrary.dto.PointDTO;
-import com.sadikov.myLibrary.mapper.Mappers;
-import com.sadikov.myLibrary.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;

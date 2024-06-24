@@ -28,7 +28,7 @@ public class TaskService {
     @Transactional
     public void createTask(TasksDTO tasksDTO, DriverDTO driverDTO, CarDTO carDTO, User user) throws TaskNotCreatedException {
         if(!Mappers.checkLogistForCompany(user, driverDTO.getCompanyInn())){
-            throw new TaskNotCreatedException("Нет прав на создания задания в этой компании!");
+            throw new TaskNotCreatedException("You do not have permission to create a task in this company.!");
         }
         Tasks tasks = Mapper.buildToTask(tasksDTO, driverDTO, carDTO);
         tasksRepository.save(tasks);
@@ -43,11 +43,12 @@ public class TaskService {
 
         Optional<Tasks> tasks = tasksRepository.findById(taskId);
         if (tasks.isEmpty()) {
-            throw new TaskNotFoundException("Задание не найдено!");
+            throw new TaskNotFoundException("Task not found!");
         }
+
         if (!(Mappers.checkLogistForCompany(user, tasks.get().getCompanyInn()) ||
         Mappers.checkDriverForCompany(user, tasks.get().getCompanyInn()))) {
-            throw new TaskOfAnotherCompanyException("Данное задание другой компании!");
+            throw new TaskOfAnotherCompanyException("This task is from another company!");
         }
         return tasks.get();
     }
@@ -56,19 +57,19 @@ public class TaskService {
     public Tasks getTask(Long taskId) throws TaskNotFoundException {
         Optional<Tasks> tasks = tasksRepository.findById(taskId);
         if (tasks.isEmpty()) {
-            throw new TaskNotFoundException("Такого задания не существует!");
+            throw new TaskNotFoundException("There is no such task!");
         }
         return tasks.get();
     }
     @Transactional(readOnly = true)
-    public List<Tasks> getAllTasks(Integer offset, Integer limit, User user, String companyName) throws TaskNotFoundException,
+    public List<Tasks> getAllTasksCompany(Integer offset, Integer limit, User user, String companyName) throws TaskNotFoundException,
             TaskOfAnotherCompanyException {
-        if(tasksRepository.findByCompanyName(companyName).isEmpty()){
-            throw new TaskNotFoundException("У данной компании нет заданий!");
+        List<Tasks> tasks = tasksRepository.findByCompanyName(companyName);
+        if(tasks.isEmpty()){
+            throw new TaskNotFoundException("The company has no tasks!");
         }
-
-         if(!Mappers.checkLogistForCompany(user,tasksRepository.findByCompanyName(companyName).get(0).getCompanyInn())){
-             throw new TaskOfAnotherCompanyException("Вы не логист данной компании!");
+         if(!Mappers.checkLogistForCompany(user,tasks.get(0).getCompanyInn())){
+             throw new TaskOfAnotherCompanyException("You are not a logist for this company!");
          }
         Pageable pageable = PageRequest.of(offset,limit);
         return tasksRepository.findBySomeCompanyName(companyName,pageable).getContent();
@@ -78,11 +79,25 @@ public class TaskService {
     public List<Tasks> getAllTasksDriver(User user) throws TaskNotFoundException,
             TaskOfAnotherCompanyException {
 
-        if(tasksRepository.findByDriverId(user.getUserId()).isEmpty()){
-            throw new TaskNotFoundException("У водителя нет заданий!");
+        List<Tasks> tasks = tasksRepository.findByDriverId(user.getUserId());
+        if(tasks.isEmpty()){
+            throw new TaskNotFoundException("The driver has no tasks!");
         }
+        return tasks;
+    }
 
-        return tasksRepository.findByDriverId(user.getUsername());
+    @Transactional(readOnly = true)
+    public String getInnCompany(String companyName) throws TaskNotFoundException {
+        List<Tasks> tasks = tasksRepository.findByCompanyName(companyName);
+
+        if(tasks.isEmpty()){
+            throw new TaskNotFoundException("The company has no tasks!");
+        }
+        return tasks.get(0).getCompanyInn();
+    }
+    @Transactional(readOnly = true)
+    public int countTasksToday(String companyName){
+        return tasksRepository.findByTasksToday(companyName).size();
     }
 
 }

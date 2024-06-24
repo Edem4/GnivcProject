@@ -17,4 +17,10 @@ public interface TasksRepository extends JpaRepository<Tasks, Long> {
 
        @Query("SELECT e FROM Tasks e WHERE e.companyName = :companyName")
        Page<Tasks> findBySomeCompanyName(@Param("companyName") String companyName, Pageable pageable);
+
+       @Query(value = "SELECT * FROM (SELECT * FROM tasks\n" +
+               "        WHERE date_trunc('day', create_time) = current_date)ranked_tasks\n" +
+               "        WHERE company_name=:companyName", nativeQuery = true)
+       List<Tasks> findByTasksToday(@Param("companyName") String companyName);
+
 }

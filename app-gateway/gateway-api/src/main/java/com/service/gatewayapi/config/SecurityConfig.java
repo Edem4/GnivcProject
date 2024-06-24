@@ -44,8 +44,10 @@ public class SecurityConfig{
                     requests.pathMatchers("/portal/cars/**").hasAnyAuthority("ADMIN","LOGIST");
                     requests.pathMatchers("/logist/tasks/driver").hasAnyAuthority("DRIVER");
                     requests.pathMatchers("/logist/flight/create").hasAnyAuthority("DRIVER","LOGIST");
+                    requests.pathMatchers("/logist/stat").hasAnyAuthority("ADMIN","LOGIST");
                     requests.pathMatchers("/logist/**").hasAnyAuthority("LOGIST");
                     requests.pathMatchers("/driver/**").hasAnyAuthority("DRIVER");
+                    requests.pathMatchers("/dwh/**").hasAnyAuthority("ADMIN","LOGIST");
                 })
                 .oauth2ResourceServer(ServerConfig ->
                         ServerConfig.authenticationManagerResolver(context -> Mono.just(provider))

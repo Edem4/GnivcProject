@@ -14,6 +14,8 @@ public class Events {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column()
+    private String companyName;
+    @Column()
     private String status;
     @Column()
     private LocalDateTime timeEvent;

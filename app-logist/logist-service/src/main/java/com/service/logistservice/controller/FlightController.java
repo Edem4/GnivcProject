@@ -8,6 +8,7 @@ import com.sadikov.myLibrary.exceptions.TaskNotFoundException;
 import com.sadikov.myLibrary.exceptions.TaskOfAnotherCompanyException;
 import com.sadikov.myLibrary.mapper.Mappers;
 import com.sadikov.myLibrary.model.User;
+import com.service.logistservice.repository.EventsRepository;
 import com.service.logistservice.service.FlightService;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.ForbiddenException;
@@ -26,10 +27,13 @@ public class FlightController {
 
     private final FlightService flightService;
 
+    private final EventsRepository eventsRepository;
+
 
     @Autowired
-    public FlightController(FlightService flightService) {
+    public FlightController(FlightService flightService, EventsRepository eventsRepository) {
         this.flightService = flightService;
+        this.eventsRepository = eventsRepository;
     }
 
 
@@ -44,10 +48,10 @@ public class FlightController {
         try {
 
             flightService.createFlight(flightDTO, Mappers.getUserFromHeaders(headers));
-            return new ResponseEntity<>("Рейс успешно создан!", HttpStatus.CREATED);
+            return new ResponseEntity<>("Flight created successfully!", HttpStatus.CREATED);
 
         } catch (ForbiddenException | TaskNotFoundException | JsonProcessingException |
-                 TaskOfAnotherCompanyException e) {
+                 TaskOfAnotherCompanyException | FlightNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         }
     }

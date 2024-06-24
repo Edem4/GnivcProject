@@ -9,14 +9,12 @@ import com.service.portalservice.exceptions.*;
 import com.service.portalservice.mappers.Mapper;
 import com.service.portalservice.models.User;
 import com.service.portalservice.service.CompanyService;
-import com.service.portalservice.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
@@ -26,10 +24,6 @@ import java.util.Objects;
 public class CompanyController {
     @Autowired
     private CompanyService companyService;
-    @Autowired
-    private UserService userService;
-
-
     //СОЗДАНИЕ КОМПАНИИ
     @PostMapping("/create")
     public ResponseEntity<String> createCompany(@RequestBody @Valid DaDataDto daDataDto,
@@ -41,7 +35,7 @@ public class CompanyController {
         try {
             User user = Mapper.getUserFromHeaders(headers);
             companyService.createCompany(daDataDto, user);
-            return new ResponseEntity<>("Компания создана пользователем: "+ user.getUsername() , HttpStatus.CREATED);
+            return new ResponseEntity<>("Company created by user: "+ user.getUsername() , HttpStatus.CREATED);
 
         } catch (InvalidInnException | UserNotFoundException | JsonProcessingException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -67,7 +61,7 @@ public class CompanyController {
             }else {
                 companyService.addDriverForCompany(userDTO, user);
             }
-            return new ResponseEntity<>("Пользователь добавлен в компанию " + userDTO.getCompanyName(), HttpStatus.OK);
+            return new ResponseEntity<>("User added to company " + userDTO.getCompanyName(), HttpStatus.OK);
 
         }catch (JsonProcessingException | ForbiddenException |
                 RoleNotSetException | UserNotFoundException | UserNotCreatedException  e){

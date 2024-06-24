@@ -1,7 +1,6 @@
 package com.service.logistservice.dto;
 
 import com.service.logistservice.model.Points;
-import jakarta.persistence.Column;
 import lombok.Data;
 
 @Data

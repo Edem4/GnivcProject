@@ -61,7 +61,7 @@ public class TaskController {
 
             taskService.createTask(tasksDTO, driverDTO, carDTO, Mappers.getUserFromHeaders(headers));
 
-            return new ResponseEntity<>("Задание создано!", HttpStatus.CREATED);
+            return new ResponseEntity<>("Task created!", HttpStatus.CREATED);
 
         } catch (ForbiddenException | JsonProcessingException | TaskNotCreatedException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
@@ -90,15 +90,14 @@ public class TaskController {
     ) {
         try {
             User user = Mappers.getUserFromHeaders(headers);
-            return taskService.getAllTasks(offset, limit, user, companyName);
+            return taskService.getAllTasksCompany(offset, limit, user, companyName);
         } catch (JsonProcessingException | TaskNotFoundException | TaskOfAnotherCompanyException e) {
             throw new RuntimeException(e);
         }
     }
 
     @GetMapping("/driver")
-    public ResponseEntity<?> getAllTasksDriver(@RequestHeader HttpHeaders headers
-    ) {
+    public ResponseEntity<?> getAllTasksDriver(@RequestHeader HttpHeaders headers) {
         try {
             User user = Mappers.getUserFromHeaders(headers);
             return new ResponseEntity<>(taskService.

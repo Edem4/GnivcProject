@@ -6,7 +6,6 @@ import com.sadikov.myLibrary.dto.EventDTO;
 import com.sadikov.myLibrary.exceptions.EventNotCreateException;
 import com.sadikov.myLibrary.exceptions.FlightNotFoundException;
 import com.sadikov.myLibrary.exceptions.TaskNotFoundException;
-import com.sadikov.myLibrary.exceptions.TaskOfAnotherCompanyException;
 import com.service.logistservice.service.EventsService;
 import com.service.logistservice.service.FlightService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

@@ -14,7 +14,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
@@ -34,7 +33,7 @@ public class UserController {
         }
         try {
             userService.createNewUserRegister(registratorDTO);
-            return  new ResponseEntity<>("Пользователь "+ registratorDTO.getUsername() +"успешно создан!", HttpStatus.CREATED);
+            return  new ResponseEntity<>("User "+ registratorDTO.getUsername() +"successfully created!", HttpStatus.CREATED);
         } catch (UserNotCreatedException e) {
             return new ResponseEntity<>(e.getMessage(), e.getStatus());
         } catch (UserNotFoundException e) {
@@ -52,7 +51,7 @@ public class UserController {
         }
         try {
             userService.resetPassword(passwordDTO, Mapper.getUserFromHeaders(headers));
-            return new ResponseEntity<>("Пароль успешно изменен!",HttpStatus.OK);
+            return new ResponseEntity<>("Password changed successfully!",HttpStatus.OK);
         } catch (UserNotFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -64,7 +63,7 @@ public class UserController {
                                              @RequestHeader HttpHeaders headers) throws JsonProcessingException {
         try {
             userService.changeUserData(changeUserDataDTO, Mapper.getUserFromHeaders(headers));
-            return new ResponseEntity<>("Данныйе пользователя успешно изменены!",HttpStatus.OK);
+            return new ResponseEntity<>("User data has been successfully changed!",HttpStatus.OK);
         } catch (UserNotFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

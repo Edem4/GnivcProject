@@ -65,17 +65,17 @@ public class CompanyService {
         UserDataBase userAdmin = userRepository.findById(user.getUserId()).get();
 
         if(!checkValidRole(userDTO)) {
-            throw new ForbiddenException("Такой роли в системе не существует!");
+            throw new ForbiddenException("This role does not exist in the system!");
         }
         if(getCompany(userDTO.getCompanyName()) == null) {
-            throw new ForbiddenException("Такой компании не существует");
+            throw new ForbiddenException("No such company exists");
         }
 
         Company company = getCompany(userDTO.getCompanyName());
         String roleCompany = Mapper.parseRoleOfCompany(company,userDTO.getCompanyRole());
 
         if(!Mapper.checkRoleForCompany(userAdmin,company.getRoleCompany(),ROLE_ADMIN)) {
-            throw new ForbiddenException("У пользователя нет прав добавить нового сотрудника!");
+            throw new ForbiddenException("The user does not have rights to add a new worker!");
         }
 
         if(userRepository.findByUsername(userDTO.getUsername()) == null){
@@ -85,7 +85,7 @@ public class CompanyService {
         UserDataBase newWorker = userRepository.findByUsername(userDTO.getUsername());
 
         if(Mapper.checkRoleForCompany(newWorker,company.getRoleCompany())) {
-            throw new RoleNotSetException("Пользователь уже имеет роль в компании!", HttpStatus.FORBIDDEN);
+            throw new RoleNotSetException("The user already has a role in the company!", HttpStatus.FORBIDDEN);
         }
 
         if(userDTO.getCompanyRole().equals(ROLE_LOGIST)) {
@@ -111,14 +111,14 @@ public class CompanyService {
         UserDataBase userLogist = userRepository.findById(user.getUserId()).get();
 
         if(!userDTO.getCompanyRole().equals(ROLE_DRIVER)) {
-            throw new ForbiddenException("Вы можете добавить сотрудника только с ролью DRIVER");
+            throw new ForbiddenException("You can add an worker with a role DRIVER");
         }
 
         Company company = getCompany(userDTO.getCompanyName());
         String roleCompany = Mapper.parseRoleOfCompany(company,userDTO.getCompanyRole());
 
         if(!Mapper.checkRoleForCompany(userLogist,company.getRoleCompany(),ROLE_LOGIST)) {
-            throw new ForbiddenException("У пользователя нет прав добавить сотрудника в данную компанию!");
+            throw new ForbiddenException("The user does not have rights to add an worker this company!");
         }
 
         if(userRepository.findByUsername(userDTO.getUsername()) == null){
@@ -128,7 +128,7 @@ public class CompanyService {
         UserDataBase newWorker = userRepository.findByUsername(userDTO.getUsername());
 
         if(Mapper.checkRoleForCompany(newWorker,company.getRoleCompany())) {
-            throw new RoleNotSetException("Пользователь уже имеет роль в компании!", HttpStatus.FORBIDDEN);
+            throw new RoleNotSetException("The user already has a role in the company!", HttpStatus.FORBIDDEN);
         }
 
         company.setDriverCount();
@@ -160,13 +160,13 @@ public class CompanyService {
         Company company = getCompany(nameCompany);
 
         if(userDriver == null) {
-            throw new UserNotFoundException("Пользователь не найден");
+            throw new UserNotFoundException("User not found!");
         }
         if(!accessDriver(userRequest,company)) {
-            throw new ForbiddenException("У пользователя нет прав в этой компании");
+            throw new ForbiddenException("The user does not have roles in this company");
         }
             if(!Mapper.checkRoleForCompany(userDriver,company.getRoleCompany(),"DRIVER")){
-            throw new ForbiddenException("Водителя нет в данной компании");
+            throw new ForbiddenException("This driver is not in this company");
         }
             DriverDTO driverDTO = new DriverDTO();
             driverDTO.setCompanyInn(company.getInn());

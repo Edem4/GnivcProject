@@ -34,7 +34,7 @@ public class FightController {
         }
         try {
             logistClient.createFlight(flightDTO, headers.toSingleValueMap());
-            return new ResponseEntity<>("Рейс успешно создан!", HttpStatus.CREATED);
+            return new ResponseEntity<>("Flight created successfully!", HttpStatus.CREATED);
 
         } catch (ForbiddenException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
@@ -48,6 +48,6 @@ public class FightController {
         eventDTO.setDriverId(Mappers.getUserFromHeaders(headers).getUserId());
         producer.eventMessage(eventDTO);
 
-        return new ResponseEntity<>("Событие отправленно!", HttpStatus.OK);
+        return new ResponseEntity<>("Event send!", HttpStatus.OK);
     }
 }

@@ -25,6 +25,7 @@ import java.util.List;
 @Data
 @RequiredArgsConstructor
 public class KeycloakService {
+
     private final Keycloak keycloak;
     private final UserRepository userRepository;
     private final RealmResource realm;
@@ -42,6 +43,7 @@ public class KeycloakService {
         setRole(result, ROLE_REGISTER);
         sendPassword(userRepresentation);
     }
+
     public void addUser(UserRepresentation userRepresentation) throws KeycloakException, UserNotFoundException {
         Response result = realm.users().create(userRepresentation);
         sendPassword(userRepresentation);

@@ -22,7 +22,7 @@ public class DriverLocationController {
         try {
             point.setDriverId(Mappers.getUserFromHeaders(headers).getUserId());
             producer.pointMessage(point);
-            return new ResponseEntity<>("Геопозиция отправленна!", HttpStatus.OK);
+            return new ResponseEntity<>("Geolocation sent!", HttpStatus.OK);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

@@ -1,7 +1,6 @@
 package com.service.portalservice.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.service.portalservice.dto.GetCompanyDTO;
 import com.service.portalservice.exceptions.CarAlreadyExistException;
 import com.service.portalservice.exceptions.CarNotFoundExceptions;
 import com.service.portalservice.exceptions.ForbiddenException;

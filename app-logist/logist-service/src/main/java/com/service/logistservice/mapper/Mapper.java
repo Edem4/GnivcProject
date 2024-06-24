@@ -6,6 +6,8 @@ import com.sadikov.myLibrary.dto.GetTaskDTO;
 import com.service.logistservice.dto.TasksDTO;
 import com.service.logistservice.model.Tasks;
 
+import java.time.LocalDateTime;
+
 public class Mapper {
     public static GetTaskDTO convertTaskDTO(Tasks task){
         GetTaskDTO taskDTO = new GetTaskDTO();
@@ -22,6 +24,7 @@ public class Mapper {
     public static Tasks buildToTask(TasksDTO tasksDTO, DriverDTO driverDTO, CarDTO carDTO) {
         Tasks tasks = new Tasks();
 
+        tasks.setCreateTime(LocalDateTime.now());
         tasks.setCompanyName(tasksDTO.getNameCompany());
         tasks.setCompanyInn(driverDTO.getCompanyInn());
         tasks.setStartPoint(tasksDTO.getStartPoint());

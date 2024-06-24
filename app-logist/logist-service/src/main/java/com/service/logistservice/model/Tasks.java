@@ -3,6 +3,7 @@ package com.service.logistservice.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +16,13 @@ public class Tasks {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column()
+    @Column
     private String companyName;
-    @Column()
+    @Column
     private String companyInn;
+
+    @Column
+    private LocalDateTime createTime;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "startPoint", referencedColumnName = "id")

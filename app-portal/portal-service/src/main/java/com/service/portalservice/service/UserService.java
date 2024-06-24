@@ -32,11 +32,9 @@ public class UserService {
     private final RealmResource realm;
     @Value("${keycloak.realm}")
     private String KEYCLOAK_REALM;
-//    private String ROLE_REGISTER = "REGISTERATOR";
     private final UserRepository userRepository;
 
     private MailService mailService;
-//    private DaDataService daDataService;
 
     @Autowired
     public UserService(RealmResource realm, MailService mailService, KeycloakService keycloakService,  UserRepository userRepository) {
@@ -133,34 +131,5 @@ public class UserService {
         userRepository.save(userDataBase);
     }
 
-
-//    public List<UserDTO> getUsers(GetCompanyDTO companyDTO, User user) throws ForbiddenException, CompanyNotFoundException {
-//        if(!user.getRoles().containsKey(companyDTO.getName())){
-//            throw new ForbiddenException("You don't have the necessary authority");
-//        }
-//
-//        if(!user.getClientRoles().get(companyDTO.getName()).equals("ADMIN")){
-//            throw new ForbiddenException("You don't have the necessary authority");
-//        }
-//
-//        try {
-//            keycloakService.getClientIdByName(companyDTO.getName());
-//        } catch (ClientNotFoundException e){
-//            throw new CompanyNotFoundException("Company not found");
-//        }
-//
-//
-//        List<UserRepresentation> users = keycloakService.getAllUSer();
-//
-//        List<UserRepresentation> usersFromCompany = getUsersFromCompany(users, companyDTO.getName());
-//
-//        List<UserDTO> userDTOS = new ArrayList<>();
-//
-//        for(UserRepresentation userRepresentation : usersFromCompany){
-//            userDTOS.add(Mapper.getUserDTOFromRepresentation(userRepresentation, companyDTO.getName()));
-//        }
-//
-//        return userDTOS;
-//    }
 
 }

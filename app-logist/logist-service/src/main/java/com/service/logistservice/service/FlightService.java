@@ -25,17 +25,22 @@ public class FlightService {
     @Autowired
     private TaskService taskService;
     @Transactional
-    public void createFlight(FlightDTO flightDTO, User user) throws TaskOfAnotherCompanyException, TaskNotFoundException {
+    public void createFlight(FlightDTO flightDTO, User user) throws TaskOfAnotherCompanyException, TaskNotFoundException, FlightNotFoundException {
 
         Tasks task = taskService.getTask(flightDTO.getTaskId(), user);
+        if(!task.getDriverId().equals(user.getUserId())){
+            throw new FlightNotFoundException("This task of another driver!");
+        }
 
         Events event = new Events();
         Flight flight = new Flight();
 
         event.setTimeEvent(flight.getCreateTime());
         event.setStatus(Status.CREATED.name());
+        event.setCompanyName(task.getCompanyName());
 
         flight.setDriverId(task.getDriverId());
+        flight.setCompanyName(task.getCompanyName());
         flight.setEvents(event);
         task.setFlights(flight);
 
@@ -47,7 +52,7 @@ public class FlightService {
             Flight flight = getFlight(pointDTO.getFlightId());
 
             if(!flight.getDriverId().equals(pointDTO.getDriverId())){
-                throw new FlightNotFoundException("У вас нет доступа к этому рейсу!");
+                throw new FlightNotFoundException("You do not have access to this flight!");
             }
 
             flight.setDriverLocation(points);
@@ -63,15 +68,19 @@ public class FlightService {
         GetFlightDTO getFlightDTO = new GetFlightDTO();
 
         if (!tasks.getFlights().contains(flight)) {
-            throw new TaskOfAnotherCompanyException("Данный рейс не из этого задания!");
+            throw new TaskOfAnotherCompanyException("This flight is not from this task!");
         }
 
         getFlightDTO.setId(flight.getId());
         getFlightDTO.setStart(flight.getStartTime());
         getFlightDTO.setCreate(flight.getCreateTime());
         getFlightDTO.setEnd(flight.getEndTime());
-        getFlightDTO.setStatusNow(Status.valueOf(flight.getEvents().stream().reduce((a, b) -> b).get().getStatus()));
+        getFlightDTO.setStatusNow(getLastStatus(flight));
         return getFlightDTO;
+    }
+
+    public Status getLastStatus(Flight flight){
+       return Status.valueOf(flight.getEvents().stream().reduce((a, b) -> b).get().getStatus());
     }
 
     @Transactional(readOnly = true)
@@ -80,7 +89,7 @@ public class FlightService {
         Optional<Flight> flight = flightRepository.findById(flightId);
 
         if (flight.isEmpty()) {
-            throw new FlightNotFoundException("Рейс не был найден!");
+            throw new FlightNotFoundException("Flight not found!");
         }
         return flight.get();
     }
@@ -89,7 +98,7 @@ public class FlightService {
             FlightNotFoundException, TaskNotFoundException {
 
         if (taskService.getTask(tasksId, user).getFlights().isEmpty()) {
-            throw new FlightNotFoundException("У данного задания нет рейсов!");
+            throw new FlightNotFoundException("This task has no flights!");
         }
         return taskService.getTask(tasksId).getFlights();
 
@@ -102,11 +111,11 @@ public class FlightService {
         Flight flight = getFlight(flightId);
 
         if (!tasks.getFlights().contains(flight)) {
-            throw new TaskOfAnotherCompanyException("Данный рейс не из этого задания!");
+            throw new TaskOfAnotherCompanyException("This flight is not from this task!");
         }
 
         if (flight.getDriverLocation().isEmpty()) {
-            throw new PointsNotFoundException("Точки Геопозиции не были найденны!");
+            throw new PointsNotFoundException("Geolocation points not found!");
         }
         return flight.getDriverLocation();
     }

@@ -30,11 +30,11 @@ public class CarService {
 
         UserDataBase userDataBase = userService.getUserFromDateBase(user.getUserId());
 
-            if (!accessCar(userDataBase,companyService.getCompany(car.getCompany()))){
-                throw new ForbiddenException("В данной компании вы не можете добавить автомобиль!");
+            if (!isAccessCar(userDataBase,companyService.getCompany(car.getCompany()))){
+                throw new ForbiddenException("You cannot add a car to this company!");
             }
             if (carRepository.findByVin(car.getVin()) != null) {
-                throw new CarAlreadyExistException("Автомобиль уже принадлежит компании!");
+                throw new CarAlreadyExistException("The car already belongs to the company!");
             }
 
         carRepository.save(car);
@@ -47,18 +47,18 @@ public class CarService {
         Car car = carRepository.findByNumber(number);
 
         if(car == null) {
-            throw new CarNotFoundExceptions("Автомобиль не найден!");
+            throw new CarNotFoundExceptions("Car not found!");
         }
 
-        if(!accessCar(userDataBase,companyService.getCompany(car.getCompany()))) {
-            throw new ForbiddenException("У Пользователя нет доступа к этой машине!");
+        if(!isAccessCar(userDataBase,companyService.getCompany(car.getCompany()))) {
+            throw new ForbiddenException("The User does not have access to this car!");
         }
         CarDTO carDTO = new CarDTO();
         carDTO.setNumberAuto(car.getNumber());
         return carDTO;
     }
 
-    private static boolean accessCar(UserDataBase userDataBase, Company company){
+    private static boolean isAccessCar(UserDataBase userDataBase, Company company){
         return Mapper.checkRoleForCompany(userDataBase, company.getRoleCompany(), "ADMIN") ||
                 Mapper.checkRoleForCompany(userDataBase, company.getRoleCompany(), "LOGIST");
     }
